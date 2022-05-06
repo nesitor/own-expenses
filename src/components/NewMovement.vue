@@ -57,8 +57,9 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { ref } from 'vue'
+import { v4 as uuid } from 'uuid';
 import { Check } from "@element-plus/icons-vue";
+import {defaultAccounts, defaultCategories} from "@/models/movement";
 
 @Options({
   components: {
@@ -69,31 +70,24 @@ import { Check } from "@element-plus/icons-vue";
 })
 
 export default class NewMovement extends Vue {
-  category = ref(0)
-  account = ref(0)
-  concept = ref('')
-  amount = ref(0)
+  categories = defaultCategories
+  accounts = defaultAccounts
 
-  categories = [
-    {id: 0, name: 'Spend'},
-    {id: 1, name: 'Income'}
-  ]
-
-  accounts = [
-    {id: 0, name: 'Bank N26'},
-    {id: 2, name: 'Bank BBVA'},
-    {id: 3, name: 'CRO Card'}
-  ]
+  category = 0
+  account = 0
+  concept = ''
+  amount = 0
 
   saveMovement(): void {
-    console.log(this.accounts)
     const data = {
-      account: this.accounts.find(item => item.id == this.account.value),
-      category: this.categories.find(item => item.id == this.category.value),
+      id: uuid(),
+      account: this.accounts.find(item => item.id === this.account),
+      category: this.categories.find(item => item.id === this.category),
       concept: this.concept,
       amount: this.amount
     }
-    console.log('send-form:', data)
+
+    this.$emit('newMovement', data)
   }
 }
 </script>
